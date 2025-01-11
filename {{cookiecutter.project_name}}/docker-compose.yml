@@ -1,0 +1,40 @@
+version: '3.8'
+
+networks:
+  {{ cookiecutter.project_name }}_net:
+    name: {{ cookiecutter.project_name }}_net
+    driver: bridge
+
+services:
+  backend:
+    image: {{cookiecutter.docker_image_backend}}:${DOCKER_TAG:-latest}
+    build: ./backend
+    container_name: {{cookiecutter.docker_image_backend}}
+    restart: always
+    ports:
+      - "${PORT:-5000}:5000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend-data:/backend
+    networks:
+      - {{ cookiecutter.project_name }}_net
+  
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+        - db-data-static:/var/lib/postgresql/data
+    ports:
+        - 0.0.0.0:${PORT:-5432}:5432
+    networks:
+      - {{ cookiecutter.project_name }}_net
+
+volumes:
+  db-data-static:
+  backend-data:
