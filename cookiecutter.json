@@ -10,7 +10,7 @@
     "backend_cors_origins": "http://localhost,http://localhost:{{ cookiecutter.port }}",
     "postgres_user": "postgres",
     "postgres_password": "postgres",
-    "postgres_host": "localhost",
+    "postgres_host": ["localhost", "postgres"],
     "postgres_port": "5432",
     "postgres_db": "{{ cookiecutter.project_name }}_db"
 }
