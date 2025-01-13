@@ -6,13 +6,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-class Config:
+class CONFIG:
     SECRET_KEY = secrets.token_urlsafe(32)
     HOST = os.getenv('HOST')
     PORT = int(os.getenv('PORT'))
     BASE_URL=os.getenv('BASE_URL')
     TOKEN_SECRET_KEY=os.getenv('TOKEN_SECRET_KEY')
-    SUB = int(os.getenv('SUB')) # Identificador usuario token
+    SUB = os.getenv('SUB') # Identificador usuario token
 
     {%- if cookiecutter.use_db == "yes" %}
 
@@ -26,17 +26,17 @@ class Config:
     
     {%- endif %}
 
-class DevelopmentConfig(Config):
+class DevelopmentConfig(CONFIG):
     DEBUG = True
     TESTING = True
 
 
-class StagingConfig(Config):
+class StagingConfig(CONFIG):
     DEBUG = False
     TESTING = False
 
 
-class ProductionConfig(Config):
+class ProductionConfig(CONFIG):
     DEBUG = False
     TESTING = False
 
