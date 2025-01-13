@@ -43,6 +43,9 @@ BASE_URL={{ cookiecutter.base_url }} # Usado solo en producción
 
 BACKEND_CORS_ORIGINS={{ cookiecutter.backend_cors_origins }}
 
+TOKEN_SECRET_KEY=<token_secret_key>
+SUB={{  cookiecutter.project_name}} # Identificador usuario token
+
 {%- if cookiecutter.use_db == "yes" %}
 
 # Configuración de la base de datos
