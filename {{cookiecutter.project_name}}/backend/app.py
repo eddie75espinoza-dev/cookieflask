@@ -27,7 +27,7 @@ def create_app():
     @app.route("/")
     def app_info():
         info_data = {
-            "name": {{ cookiecutter.project_name }}
+            "name": f"{{ cookiecutter.project_name }}"
         }
         return jsonify(info_data), 200
     
