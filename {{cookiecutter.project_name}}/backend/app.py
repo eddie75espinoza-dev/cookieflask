@@ -49,6 +49,7 @@ def create_app():
         except Exception as e:
             import traceback
             return jsonify(f"Database connection failed: {e}", traceback.format_exc())
+        
     {%- endif %}
     return app
 
