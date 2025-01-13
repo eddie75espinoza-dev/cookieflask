@@ -40,8 +40,8 @@ class ProductionConfig(Config):
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
 if ENVIRONMENT == 'development':
-    APP_CONFIG = 'config.DevelopmentConfig'
+    APP_CONFIG = DevelopmentConfig
 elif ENVIRONMENT == 'production':
-    APP_CONFIG = 'config.ProductionConfig'
+    APP_CONFIG = ProductionConfig
 elif ENVIRONMENT == 'staging':
-    APP_CONFIG = 'config.StagingConfig'
+    APP_CONFIG = StagingConfig

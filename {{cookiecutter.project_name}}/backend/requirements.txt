@@ -6,6 +6,7 @@ Flask-SQLAlchemy
 loguru
 gunicorn
 marshmallow
+marshmallow-sqlalchemy
 psycopg2-binary
 pytest
 python-dotenv
