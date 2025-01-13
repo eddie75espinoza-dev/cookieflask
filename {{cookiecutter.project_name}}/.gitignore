@@ -6,3 +6,7 @@ app.egg-info
 htmlcov
 .cache
 .venv
+.env
+.pytest_cache/
+.vscode
+*.log

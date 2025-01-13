@@ -1,5 +1,4 @@
-# Python
-__pycache__
+__pycache__/
 app.egg-info
 *.pyc
 .mypy_cache
@@ -7,3 +6,9 @@ app.egg-info
 htmlcov
 .venv
 .env
+.pytest_cache/
+.vscode
+*.md
+*.log
+*.pyc
+*.tmp
