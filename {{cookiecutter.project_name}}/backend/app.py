@@ -3,8 +3,7 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
-from config import APP_CONFIG
-from routers import routes
+from core.config import APP_CONFIG
 
 
 ma = Marshmallow()
@@ -18,7 +17,7 @@ def create_app():
     ma.init_app(app)
     JWTManager(app)
 
-    app.register_blueprint(routes.bp)
+    #app.register_blueprint(routes.bp)
     
     script_name = APP_CONFIG.BASE_URL
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
