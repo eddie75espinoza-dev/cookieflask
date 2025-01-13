@@ -7,6 +7,7 @@ from sqlalchemy import text
 
 from db.database import db
 {%- endif %}
+
 from core.config import APP_CONFIG
 
 
@@ -22,6 +23,7 @@ def create_app():
 
     db.init_app(app)
     {%- endif %}
+
     ma.init_app(app)
     JWTManager(app)
 

@@ -12,7 +12,8 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /backend
 
 RUN apt-get update && apt-get install -y \
-    postgresql-client \
+{%- if cookiecutter.use_db == "yes" %}
+    postgresql-client \{%- endif %}
     libssl-dev \
     libxrender1 \
     libxext6 \

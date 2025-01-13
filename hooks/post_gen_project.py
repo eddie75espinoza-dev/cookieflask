@@ -12,10 +12,16 @@ if use_db == "no":
         'backend',
     )
     db_path = os.path.join(app_path, 'db')
+    models_path = os.path.join(app_path, 'models')
 
     try:
         shutil.rmtree(db_path)
     except Exception:
         print("ERROR: cannot delete db path %s" % db_path)
         sys.exit(1)
-
+    
+    try:
+        shutil.rmtree(models_path)
+    except Exception:
+        print("ERROR: cannot delete models path %s" % models_path)
+        sys.exit(1)
