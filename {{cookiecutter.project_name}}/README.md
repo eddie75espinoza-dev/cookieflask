@@ -7,7 +7,7 @@
 
 ## **Descripción General**
 
-{{ cookiecutter.short_description_project }}
+{{ cookiecutter.project_short_description }}
 
 ## Índice
 
@@ -33,19 +33,21 @@ Para ejecutar **{{ cookiecutter.project_name }}**, necesitas tener instalados lo
 Crea un archivo _.env_ en la base del proyecto con las siguientes variables
 
 ```bash
-# AMBIENTE DE LA APLICACIÓN (elegir una opción)
-ENVIRONMENT=<'production', 'development', 'staging'>
+# AMBIENTE DE LA APLICACIÓN (seleccionar uno: production, development, staging)
+ENVIRONMENT=production
 
 HOST={{ cookiecutter.host }}
 PORT={{ cookiecutter.port }}
-BASE_URL={{ cookiecutter.base_url }} # Para producción
+BASE_URL={{ cookiecutter.base_url }} # Usado solo en producción
 
-# DB
-POSTGRES_USER=<postgres_user>
-POSTGRES_PASSWORD=<postgres_password>
-POSTGRES_HOST=<postgres_host>
-POSTGRES_PORT=<postgres_port>
-POSTGRES_DB=<postgres_db>
+{%- if cookiecutter.use_db == "yes" %}
+# Configuración de la base de datos
+POSTGRES_USER=<usuario_de_postgres>
+POSTGRES_PASSWORD=<contraseña_de_postgres>
+POSTGRES_HOST=<host_de_postgres>
+POSTGRES_PORT=<puerto_de_postgres>
+POSTGRES_DB=<nombre_de_la_base_de_datos>
+{%- endif %}
 ```
 
 ### Construir y Levantar los Contenedores
