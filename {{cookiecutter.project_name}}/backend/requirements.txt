@@ -1,13 +1,17 @@
 Flask
 Flask-JWT-Extended
 flask-marshmallow
-Flask-Migrate
-Flask-SQLAlchemy
 loguru
 gunicorn
 marshmallow
-marshmallow-sqlalchemy
-psycopg2-binary
 pytest
 python-dotenv
 requests
+
+{%- if cookiecutter.use_db == "yes" %}
+Flask-Migrate
+Flask-SQLAlchemy
+marshmallow-sqlalchemy
+psycopg2-binary
+sqlalchemy
+{%- endif %}
