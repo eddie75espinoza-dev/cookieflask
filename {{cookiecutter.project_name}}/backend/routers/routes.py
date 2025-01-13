@@ -20,6 +20,7 @@ def read_root():
     }), 200
 
 {%- if cookiecutter.use_db == "yes" %}
+
 # TODO DELETE
 # Ruta para probar la conexión a la base de datos
 if ENVIRONMENT == 'development':
