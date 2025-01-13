@@ -17,10 +17,12 @@ services:
       - .env
     volumes:
       - ./backend:/backend
+    {%- if cookiecutter.use_db == "yes" %}
     depends_on:
       - postgres
     extra_hosts:
       - host.docker.internal:host-gateway
+    {%- endif %}
     command: > 
       bash -c "if [ '${ENVIRONMENT}' = 'production' ]; then \
         gunicorn --workers 4 --bind ${HOST}:5000 'app:app'; \
@@ -30,6 +32,7 @@ services:
     networks:
       - {{ cookiecutter.project_name }}_net
   
+{%- if cookiecutter.use_db == "yes" %}
   postgres:
     image: postgres:latest
     container_name: postgres
@@ -45,3 +48,5 @@ services:
 
 volumes:
   db-data-static:
+
+{%- endif %}
