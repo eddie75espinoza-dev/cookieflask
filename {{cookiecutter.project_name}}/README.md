@@ -7,7 +7,7 @@
 
 ## **Descripción General**
 
-{{ cookiecutter.short_description_project }}
+{{ cookiecutter.project_short_description }}
 
 ## Índice
 
