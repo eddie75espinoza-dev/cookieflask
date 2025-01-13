@@ -2,8 +2,7 @@ import jwt
 from flask import request, jsonify
 from functools import wraps
 
-from config import Config
-from logs import logs_config
+from core.config import APP_CONFIG
 
 
 def require_bearer_token(func):
@@ -20,22 +19,18 @@ def require_bearer_token(func):
         token = auth_header.split(" ")[1]
 
         try:
-            decoded_token = jwt.decode(token, Config.TOKEN_SECRET_KEY, algorithms=["HS256"])
+            decoded_token = jwt.decode(token, APP_CONFIG.TOKEN_SECRET_KEY, algorithms=["HS256"])
             
-            if decoded_token.get("sub") != Config.SUB:
-                logs_config.logger.info(f"Invalid token data: {decoded_token.get("sub")} | token {token}")
+            if decoded_token.get("sub") != APP_CONFIG.SUB:
                 return jsonify({'msg': 'Invalid token data'}), 403
 
         except jwt.ExpiredSignatureError as jwt_exc_exp:
-            logs_config.logger.error(f"Token has expired - {str(jwt_exc_exp)}")
             return jsonify({'msg': 'Token has expired'}), 401
         
         except jwt.InvalidTokenError as jwt_exc_invalid:
-            logs_config.logger.error(f"Invalid token - {str(jwt_exc_invalid)}")
             return jsonify({'msg': 'Invalid token'}), 403
         
         except Exception as exc:
-            logs_config.logger.error(f"Unexpected error: {str(exc)}")
             return jsonify({'msg': f'An error occurred: {str(exc)}'}), 500
 
         return func(*args, **kwargs)
