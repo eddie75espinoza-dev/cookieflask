@@ -38,7 +38,10 @@ ENVIRONMENT=production
 
 HOST={{ cookiecutter.host }}
 PORT={{ cookiecutter.port }}
+
 BASE_URL={{ cookiecutter.base_url }} # Usado solo en producción
+
+BACKEND_CORS_ORIGINS={{ cookiecutter.backend_cors_origins }}
 
 {%- if cookiecutter.use_db == "yes" %}
 
