@@ -4,9 +4,9 @@ from flask_marshmallow import Marshmallow
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 {%- if cookiecutter.use_db == "yes" %}
 from sqlalchemy import text
+
 from db.database import db
 {%- endif %}
-
 from core.config import APP_CONFIG
 
 
@@ -19,6 +19,7 @@ def create_app():
     app.json.sort_keys = False
     
     {%- if cookiecutter.use_db == "yes" %}
+
     db.init_app(app)
     {%- endif %}
     ma.init_app(app)
@@ -39,6 +40,7 @@ def create_app():
         return jsonify(info_data), 200
     
     {%- if cookiecutter.use_db == "yes" %}
+
     @app.route("/test_db_connection")
     def test_db_connection():
         try:

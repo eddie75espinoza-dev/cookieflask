@@ -41,6 +41,7 @@ PORT={{ cookiecutter.port }}
 BASE_URL={{ cookiecutter.base_url }} # Usado solo en producción
 
 {%- if cookiecutter.use_db == "yes" %}
+
 # Configuración de la base de datos
 POSTGRES_USER=<usuario_de_postgres>
 POSTGRES_PASSWORD=<contraseña_de_postgres>

@@ -32,8 +32,8 @@ services:
     networks:
       - {{ cookiecutter.project_name }}_net
 
-
 {%- if cookiecutter.use_db == "yes" %}
+
   postgres:
     image: postgres:latest
     container_name: postgres
