@@ -25,9 +25,15 @@ services:
     {%- endif %}
     command: > 
       bash -c "if [ '${ENVIRONMENT}' = 'production' ]; then \
-        gunicorn --workers 4 --bind ${HOST}:5000 'app:app'; \
+        gunicorn \
+        --timeout 120 \
+        --workers 4 \
+        --bind '${HOST}:${PORT}' \
+        --access-logfile './logs/gunicorn-access.log' \
+        --error-logfile './logs/gunicorn-error.log' \
+        'app:app'; \
       else \
-        flask run --debug -p 5000 --host=${HOST}; \
+        flask run --debug -p ${PORT} --host=${HOST}; \
       fi"
     networks:
       - {{ cookiecutter.project_name }}_net
