@@ -16,7 +16,7 @@ bp = Blueprint('/', __name__, url_prefix='/')
 @require_bearer_token
 def read_root():
     return jsonify({
-        'msg': '{{ cookiecutter.project_name }}'
+        'msg': '{{ cookiecutter.project_name }} protected'
     }), 200
 
 {%- if cookiecutter.use_db == "yes" %}

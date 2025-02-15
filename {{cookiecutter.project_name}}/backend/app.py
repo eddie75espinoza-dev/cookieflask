@@ -33,7 +33,7 @@ def create_app():
         script_name: app
     })
     
-    @app.route("/")
+    @app.route("/api")
     def app_info():
         info_data = {
             "name": f"{{ cookiecutter.project_name }}"
