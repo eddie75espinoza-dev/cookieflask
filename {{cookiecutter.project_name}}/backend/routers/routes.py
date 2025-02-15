@@ -9,7 +9,7 @@ from db.database import db
 from core.middleware import require_bearer_token
 
 
-bp = Blueprint('/api/v1', __name__, url_prefix='/api/v1')
+bp = Blueprint('/', __name__, url_prefix='/')
 
 
 @bp.route('/', methods=['GET'])
