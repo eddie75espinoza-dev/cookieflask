@@ -34,4 +34,6 @@ def generate_secret_key():
 
 new_secret_key = generate_secret_key()
 
-{{ cookiecutter.update({"secret_key": f"{new_secret_key}" }) }}
+{% if cookiecutter.secret_key == "_secret_key_to_replace_" %}
+{{ cookiecutter.update({ "secret_key": new_secret_key }) }}
+{% endif %}
