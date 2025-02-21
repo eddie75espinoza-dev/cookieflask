@@ -7,8 +7,8 @@ import shutil
 def generate_secret_key():
     return secrets.token_urlsafe(32)
 
-use_db = '{{cookiecutter.use_db}}'
-secret_key = '{{cookiecutter.secret_key}}'
+use_db = "{{cookiecutter.use_db}}"
+secret_key = "{{cookiecutter.secret_key}}"
 new_secret_key = generate_secret_key()
 env_dev_file = os.path.join(os.getcwd(), '.env.dev')
 env_prod_file = os.path.join(os.getcwd(), '.env.prod')
