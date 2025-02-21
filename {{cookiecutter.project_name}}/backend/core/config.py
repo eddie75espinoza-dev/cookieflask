@@ -1,5 +1,4 @@
 import os
-import secrets
 from dotenv import load_dotenv
 
 
@@ -7,11 +6,11 @@ load_dotenv()
 
 
 class CONFIG:
-    SECRET_KEY = secrets.token_urlsafe(32)
+    SECRET_KEY = os.getenv('SECRET_KEY')
     HOST = os.getenv('HOST')
     PORT = int(os.getenv('PORT'))
-    BASE_URL=os.getenv('BASE_URL')
-    TOKEN_SECRET_KEY=os.getenv('TOKEN_SECRET_KEY')
+    BASE_URL = os.getenv('BASE_URL')
+    TOKEN_SECRET_KEY = os.getenv('TOKEN_SECRET_KEY')
     SUB = os.getenv('SUB') # Identificador usuario token
 
     {%- if cookiecutter.use_db == "yes" %}
