@@ -32,18 +32,29 @@ if use_db == "no":
 def generate_secret_key():
     return secrets.token_urlsafe(32)
 
-# Genera nuevas claves
 secret_key = generate_secret_key()
-token_secret_key = generate_secret_key()
 
-# Actualiza el archivo .env con los nuevos valores
-env_file = os.path.join(os.getcwd(), '.env.dev')
-if os.path.exists(env_file):
-    with open(env_file, 'r') as file:
-        content = file.read()
+env_dev_file = os.path.join(os.getcwd(), '.env.dev')
+
+if os.path.exists(env_dev_file):
+    with open(env_dev_file, 'r') as dev_file:
+        content = dev_file.read()
     content = content.replace('_secret_key_to_replace_', secret_key)
-    with open(env_file, 'w') as file:
-        file.write(content)
-    print(f"✅ Claves secretas actualizadas en {env_file}")
+    with open(env_dev_file, 'w') as dev_file:
+        dev_file.write(content)
+    print(f"✅ Claves secretas actualizadas en {env_dev_file}")
 else:
-    print("⚠️ Archivo .env no encontrado.")
+    print(f"⚠️ Archivo {env_dev_file} no encontrado.")
+
+
+env_prod_file = os.path.join(os.getcwd(), '.env.prod')
+
+if os.path.exists(env_prod_file):
+    with open(env_prod_file, 'r') as prod_file:
+        content = prod_file.read()
+    content = content.replace('_secret_key_to_replace_', secret_key)
+    with open(env_prod_file, 'w') as prod_file:
+        prod_file.write(content)
+    print(f"✅ Claves secretas actualizadas en {env_prod_file}")
+else:
+    print(f"⚠️ Archivo {env_prod_file} no encontrado.")

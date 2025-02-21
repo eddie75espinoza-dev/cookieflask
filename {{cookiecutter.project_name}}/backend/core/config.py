@@ -10,7 +10,7 @@ class CONFIG:
     HOST = os.getenv('HOST')
     PORT = int(os.getenv('PORT'))
     BASE_URL = os.getenv('BASE_URL')
-    TOKEN_SECRET_KEY = os.getenv('TOKEN_SECRET_KEY')
+    TOKEN_SECRET_KEY = os.getenv('SECRET_KEY')
     SUB = os.getenv('SUB') # Identificador usuario token
 
     {%- if cookiecutter.use_db == "yes" %}
