@@ -32,9 +32,9 @@ if use_db == "no":
 def generate_secret_key():
     return secrets.token_urlsafe(32)
 
+secret_key = '{{cookiecutter.secret_key}}'
 new_secret_key = generate_secret_key()
 
-{% if '{{cookiecutter.secret_key}}' == '_secret_key_to_replace_' %}
-{{ cookiecutter.update({ "secret_key": new_secret_key }) }}
-print(new_secret_key)
-{% endif %}
+if secret_key == '_secret_key_to_replace_':
+    {{ cookiecutter.update({ "secret_key": new_secret_key }) }}
+    print(new_secret_key)
