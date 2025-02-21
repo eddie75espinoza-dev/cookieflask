@@ -41,7 +41,7 @@ if os.path.exists(env_dev_file):
     
     if new_content != content:
         with open(env_dev_file, 'w') as dev_file:
-            dev_file.write(content)
+            dev_file.write(new_content)
         print(f"✅ Secret keys updated in {env_dev_file}")
 else:
     print(f"⚠️ File {env_dev_file} not found.")
