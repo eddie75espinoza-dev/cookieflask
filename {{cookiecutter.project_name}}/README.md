@@ -33,8 +33,7 @@ Para ejecutar **{{ cookiecutter.project_name }}**, necesitas tener instalados lo
 Crea un archivo _.env_ en la base del proyecto con las siguientes variables
 
 ```bash
-# AMBIENTE DE LA APLICACIÓN (seleccionar uno: production, development, staging)
-ENVIRONMENT=production
+DOCKER_TAG=dev # Usado solo en desarrollo
 
 HOST={{ cookiecutter.host }}
 PORT={{ cookiecutter.port }}
@@ -59,16 +58,22 @@ POSTGRES_DB=<nombre_de_la_base_de_datos>
 
 ### Construir y Levantar los Contenedores
 
-Ejecuta los siguientes comandos para construir y levantar los contenedores:
+Dada la separación de los ambientes de desarrollo y producción, ejecute los siguientes comandos para construir y levantar los contenedores:
 
+#### Contenedor en ambiente de producción
 ```bash
-docker-compose build
-docker-compose up -d
+docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
 ```
+
+#### Contenedor en ambiente de desarrollo
+```bash
+docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d --build
+```
+
 Para detener el servicio, ejecutar el siguiente comando en la terminal:
 
 ```bash
-docker-compose down -v
+docker-compose -f docker-compose.prod.yml --env-file .env.prod down -v
 ```
 
 ## Descripción de Endpoints

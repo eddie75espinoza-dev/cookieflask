@@ -4,7 +4,7 @@ Este repositorio contiene una plantilla para iniciar proyectos basados en Flask 
 
 ## Características
 
-- Estructura organizada: La plantilla genera un directorio principal con el nombre definido por {{cookiecutter.project_name}}, dentro del cual se encuentra el subdirectorio backend que aloja los archivos centrales de la aplicación.
+- Estructura organizada: La plantilla genera un directorio principal con el nombre definido por `{{cookiecutter.project_name}}`, dentro del cual se encuentra el subdirectorio backend que aloja los archivos centrales de la aplicación.
 
 - Hooks personalizados: Se incluye un hook (/hooks/post_gen_project.py) que permite ejecutar tareas adicionales tras la generación del proyecto.
 
@@ -85,3 +85,8 @@ El directorio `/hooks` contiene scripts que se ejecutan durante el proceso de ge
 - Realizar otras tareas de personalización.
 
 Si deseas modificar el comportamiento de estos hooks, puedes editar directamente los scripts ubicados en el directorio /hooks.
+
+
+### Notas finales
+
+Una vez concluida la descarga de la plantilla vaya al archivo `.gitignore` y descomente las lineas referentes a los archivos `_.env.dev_` y `_.env.prod_`, esto evitará que sea incluyan en los 'commit' posteriores en su trabajo con el repositorio.
