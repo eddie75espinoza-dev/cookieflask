@@ -8,7 +8,6 @@ def generate_secret_key():
     return secrets.token_urlsafe(32)
 
 use_db = "{{cookiecutter.use_db}}"
-new_secret_key = generate_secret_key()
 env_dev_file = os.path.join(os.getcwd(), '.env.dev')
 env_prod_file = os.path.join(os.getcwd(), '.env.prod')
 
@@ -37,7 +36,7 @@ if use_db == "no":
 if os.path.exists(env_dev_file):
     with open(env_dev_file, 'r') as dev_file:
         content = dev_file.read()
-    new_content = content.replace("If you don't change it, it will be changed.", new_secret_key)
+    new_content = content.replace("If you don't change it, it will be changed.", generate_secret_key())
     
     if new_content != content:
         with open(env_dev_file, 'w') as dev_file:
@@ -50,7 +49,7 @@ else:
 if os.path.exists(env_prod_file):
     with open(env_prod_file, 'r') as prod_file:
         content = prod_file.read()
-    new_content = content.replace("If you don't change it, it will be changed.", new_secret_key)
+    new_content = content.replace("If you don't change it, it will be changed.", generate_secret_key())
     
     if new_content != content:
         with open(env_prod_file, 'w') as prod_file:
