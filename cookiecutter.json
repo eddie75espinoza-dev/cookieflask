@@ -10,7 +10,7 @@
     "token_secret_key": "replace_token_secret_key",
     "backend_cors_origins": "http://localhost,http://localhost:{{ cookiecutter.port }}",
     "use_db": ["yes", "no"],
-    {% if cookiecutter.use_db == 'yes' %}
+    {% if cookiecutter.use_db == "yes" %}
     "postgres_user": "postgres",
     "postgres_password": "postgres",
     "postgres_host": [
