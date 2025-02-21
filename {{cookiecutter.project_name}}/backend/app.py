@@ -1,6 +1,9 @@
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
+{%- if cookiecutter.use_db == "yes" %}
+from flask_migrate import Migrate
+{%- endif %}
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from core.config import APP_CONFIG
@@ -19,8 +22,8 @@ def create_app():
     app.json.sort_keys = False
     
     {%- if cookiecutter.use_db == "yes" %}
-
     db.init_app(app)
+    Migrate(app, db)
     {%- endif %}
 
     ma.init_app(app)
