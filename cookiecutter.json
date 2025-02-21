@@ -10,5 +10,5 @@
     "token_secret_key": "replace_token_secret_key",
     "backend_cors_origins": "http://localhost,http://localhost:{{ cookiecutter.port }}",
     "use_db": ["yes", "no"]
-  }
+}
   
