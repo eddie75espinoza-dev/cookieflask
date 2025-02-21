@@ -6,8 +6,6 @@
     "host": "0.0.0.0",
     "port": "5000",
     "base_url": "/services/{{cookiecutter.project_name}}",
-    "secret_key": "_secret_key_to_replace_",
-    "token_secret_key": "replace_token_secret_key",
     "backend_cors_origins": "http://localhost,http://localhost:{{ cookiecutter.port }}",
     "use_db": ["yes", "no"]
 }
