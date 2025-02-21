@@ -10,12 +10,15 @@
     "token_secret_key": "replace_token_secret_key",
     "backend_cors_origins": "http://localhost,http://localhost:{{ cookiecutter.port }}",
     "use_db": ["yes", "no"],
-    "postgres_user": "{% if cookiecutter.use_db == 'yes' %}postgres{% else %}null{% endif %}",
-    "postgres_password": "{% if cookiecutter.use_db == 'yes' %}postgres{% else %}null{% endif %}",
+    {% if cookiecutter.use_db == 'yes' %}
+    "postgres_user": "postgres",
+    "postgres_password": "postgres",
     "postgres_host": [
-        "{% if cookiecutter.use_db == 'yes' %}localhost{% else %}null{% endif %}",
-        "{% if cookiecutter.use_db == 'yes' %}postgres{% else %}null{% endif %}"
+      "localhost",
+      "postgres"
     ],
-    "postgres_port": "{% if cookiecutter.use_db == 'yes' %}5432{% else %}null{% endif %}",
-    "postgres_db": "{% if cookiecutter.use_db == 'yes' %}{{ cookiecutter.project_name }}_db{% else %}null{% endif %}"
-}
+    "postgres_port": "5432",
+    "postgres_db": "{{ cookiecutter.project_name }}_db"
+    {% endif %}
+  }
+  
