@@ -33,13 +33,5 @@ def generate_secret_key():
     return secrets.token_urlsafe(32)
 
 new_secret_key = generate_secret_key()
-new_token_secret_key = generate_secret_key()
 
-secret_key = '{{cookiecutter.secret_key}}'
-token_secret_key = '{{cookiecutter.token_secret_key}}'
-
-if not secret_key:
-    {{ cookiecutter.update({"secret_key": f"{new_secret_key}" }) }}
-
-if not token_secret_key:
-    {{ cookiecutter.update({"token_secret_key": f"{new_token_secret_key}" }) }}
+{{ cookiecutter.update({"secret_key": f"{new_secret_key}" }) }}
