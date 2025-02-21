@@ -32,9 +32,18 @@ if use_db == "no":
 def generate_secret_key():
     return secrets.token_urlsafe(32)
 
-secret_key = '{{cookiecutter.secret_key}}'
-new_secret_key = generate_secret_key()
+# Genera nuevas claves
+secret_key = generate_secret_key()
+token_secret_key = generate_secret_key()
 
-if secret_key == '_secret_key_to_replace_':
-    {{ cookiecutter.update({ "secret_key": new_secret_key }) }}
-    print(new_secret_key)
+# Actualiza el archivo .env con los nuevos valores
+env_file = os.path.join(os.getcwd(), '.env.dev')
+if os.path.exists(env_file):
+    with open(env_file, 'r') as file:
+        content = file.read()
+    content = content.replace('_secret_key_to_replace_', secret_key)
+    with open(env_file, 'w') as file:
+        file.write(content)
+    print(f"✅ Claves secretas actualizadas en {env_file}")
+else:
+    print("⚠️ Archivo .env no encontrado.")
