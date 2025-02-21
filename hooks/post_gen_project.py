@@ -34,5 +34,7 @@ def generate_secret_key():
 secret_key = generate_secret_key()
 token_secret_key = generate_secret_key()
 
-cookiecutter["secret_key"] = secret_key
-cookiecutter["token_secret_key"] = token_secret_key
+cookiecutter.update({
+    "secret_key": secret_key,
+    "token_secret_key": token_secret_key
+})
