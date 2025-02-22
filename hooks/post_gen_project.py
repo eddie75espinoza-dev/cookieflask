@@ -36,11 +36,16 @@ if use_db == "no":
 
 def write_secret_key(env_file):
     if os.path.exists(env_file):
-        with open(env_file, 'a') as file:
-            file.write(f"\nSECRET_KEY={generate_secret_key()}\n")
-        print(f"✅ Secret keys updated in {env_file}")
-    else:
-        print(f"⚠️ File {env_file} not found.")
+        with open(env_file, 'r') as file:
+            content = file.read()
+        new_content = content.replace("It will be changed", generate_secret_key())
+        
+        if new_content != content:
+            with open(env_file, 'w') as file:
+                file.write(new_content)
+            print(f"✅ Secret keys updated in {env_file}")
+        else:
+            print(f"⚠️ File {env_file} not found.")
 
 
 write_secret_key(env_dev_file)
