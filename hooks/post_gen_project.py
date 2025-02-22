@@ -33,29 +33,17 @@ if use_db == "no":
         print("ERROR: cannot delete models path %s" % models_path)
         sys.exit(1)
 
-if os.path.exists(env_dev_file):
-    with open(env_dev_file, 'r') as dev_file:
-        content = dev_file.read()
-    new_content = content.replace("If you don't change it, it will be changed.", generate_secret_key())
-    
-    if new_content != content:
-        with open(env_dev_file, 'w') as dev_file:
-            dev_file.write(new_content)
-        print(f"✅ Secret keys updated in {env_dev_file}")
-else:
-    print(f"⚠️ File {env_dev_file} not found.")
+
+def write_secret_key(env_file):
+    if os.path.exists(env_file):
+        with open(env_file, 'a') as file:
+            file.write(f"\nSECRET_KEY={generate_secret_key()}\n")
+        print(f"✅ Secret keys updated in {env_file}")
+    else:
+        print(f"⚠️ File {env_file} not found.")
 
 
-if os.path.exists(env_prod_file):
-    with open(env_prod_file, 'r') as prod_file:
-        content = prod_file.read()
-    new_content = content.replace("If you don't change it, it will be changed.", generate_secret_key())
-    
-    if new_content != content:
-        with open(env_prod_file, 'w') as prod_file:
-            prod_file.write(new_content)
-        print(f"✅ Secret keys updated in {env_prod_file}")
-else:
-    print(f"⚠️ File {env_prod_file} not found.")
+write_secret_key(env_dev_file)
+write_secret_key(env_prod_file)
 
 print(f"💻 All set! Let's start coding! 🔥")
