@@ -2,11 +2,11 @@
     "project_name": "flask_project",
     "project_short_description": "This is a Flask project template generated with Cookiecutter.",
     "docker_image_backend": "{{ cookiecutter.project_name|replace('_','-') }}",
-    "python_version": ["3.13", "3.12", "3.11", "3.10", "3.8", "3.6"],
+    "python_version": ["3.13", "3.12", "3.11", "3.10", "3.8"],
     "host": "0.0.0.0",
     "port": "5000",
-    "secret_key": "It will be changed",
-    "base_url": "/services/{{cookiecutter.project_name}}",
+    "secret_key": "Generate with: python3 -c \"import secrets; print(secrets.token_urlsafe(nbytes=32))\"",
+    "api_base_url": "/services/{{cookiecutter.project_name}}",
     "backend_cors_origins": "http://localhost,http://localhost:{{ cookiecutter.port }}",
     "use_db": ["yes", "no"]
 }
