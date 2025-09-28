@@ -14,6 +14,8 @@
 * [Requisitos de Instalación](#requisitos-de-instalación)
 * [Guía de Configuración](#guía-de-configuración)
 * [Descripción de Endpoints](#descripción-de-endpoints)
+* [Logs y Monitoreo](#logs-y-monitoreo)
+* [Contribución](#contribución)
 * [Pruebas](#pruebas)
 
 ## Requisitos de Instalación
@@ -30,31 +32,7 @@ Para ejecutar **{{ cookiecutter.project_name }}**, necesitas tener instalados lo
 
 ### Configurar el archivo .env
 
-Crea un archivo _.env_ en la base del proyecto con las siguientes variables
-
-```bash
-DOCKER_TAG=dev # Usado solo en desarrollo
-
-HOST={{ cookiecutter.host }}
-PORT={{ cookiecutter.port }}
-
-BASE_URL={{ cookiecutter.base_url }} # Usado solo en producción
-
-BACKEND_CORS_ORIGINS={{ cookiecutter.backend_cors_origins }}
-
-TOKEN_SECRET_KEY=<token_secret_key>
-SUB={{  cookiecutter.project_name}} # Identificador usuario token
-
-{%- if cookiecutter.use_db == "yes" %}
-
-# Configuración de la base de datos
-POSTGRES_USER=<usuario_de_postgres>
-POSTGRES_PASSWORD=<contraseña_de_postgres>
-POSTGRES_HOST=<host_de_postgres>
-POSTGRES_PORT=<puerto_de_postgres>
-POSTGRES_DB=<nombre_de_la_base_de_datos>
-{%- endif %}
-```
+Ver archivo `.env.example` para configuraciones detalladas.
 
 ### Construir y Levantar los Contenedores
 
@@ -78,6 +56,22 @@ docker-compose -f docker-compose.prod.yml --env-file .env.prod down -v
 
 ## Descripción de Endpoints
 
+La documentación completa de los endpoints está disponible en:
+- Desarrollo: `http://localhost:5000/docs`
+- Ver también: [backend/docs/documentation.md](/backend/docs/documentation.md)
+
+## Logs y Monitoreo
+
+Los logs de la aplicación se encuentran en:
+- Contenedor: `/backend/logs/`
+
+## Contribución
+
+1. Fork el repositorio
+2. Crear feature branch (`git checkout -b feature/nueva-funcionalidad`)
+3. Commit los cambios (`git commit -am 'Agregar nueva funcionalidad'`)
+4. Push a la rama (`git push origin feature/nueva-funcionalidad`)
+5. Crear Pull Request
 
 ## Pruebas
 
@@ -86,3 +80,39 @@ Para verificar el correcto funcionamiento del servicio web, ejecute el siguiente
 ```bash
 docker exec -it {{cookiecutter.docker_image_backend}} pytest
 ```
+
+Para ejecutar los tests con cobertura, usar estos comandos:
+Para ver la cobertura básica:
+```bash
+# Ejecutar tests para middleware
+docker exec -it {{cookiecutter.docker_image_backend}} pytest --cov=core.middleware
+```
+
+Para ver cobertura detallada con líneas faltantes:
+```bash
+# Ejecutar con líneas no cubiertas en los tests
+docker exec -it {{cookiecutter.docker_image_backend}} pytest --cov=core.middleware --cov-report=term-missing
+```
+
+Para ver solo los archivos específicos:
+```bash
+docker exec -it {{cookiecutter.docker_image_backend}} pytest tests/jwt_middleware_test.py --cov=core.middleware --cov-report=term-missing
+```
+
+Para generar reporte HTML (más detallado):
+```bash
+docker exec -it {{cookiecutter.docker_image_backend}} pytest --cov=core.middleware --cov-report=html:htmlcov
+```
+
+Para verificar que alcances el 90% mínimo:
+```bash
+docker exec -it {{cookiecutter.docker_image_backend}} pytest --cov=core.middleware --cov-report=term-missing --cov-fail-under=90
+```
+
+El reporte te mostrará:
+
+Porcentaje de cobertura total
+Líneas específicas no cubiertas por tests
+Si falla cuando no alcanza el 90%
+
+El reporte HTML, podrá abrirse desde htmlcov/index.html, use un navegador para ver un reporte visual detallado de qué líneas están cubiertas y cuáles no.

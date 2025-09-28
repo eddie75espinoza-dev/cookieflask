@@ -1,17 +1,24 @@
 Flask
 Flask-JWT-Extended
 flask-marshmallow
+Jinja2
 loguru
+greenlet
 gunicorn
 marshmallow
 pytest
+pytest-cov
+pytest-mock
 python-dotenv
 requests
+urllib3
+Werkzeug
 
 {%- if cookiecutter.use_db == "yes" %}
 Flask-Migrate
 Flask-SQLAlchemy
+marshmallow
 marshmallow-sqlalchemy
 psycopg2-binary
-sqlalchemy
+SQLAlchemy
 {%- endif %}
