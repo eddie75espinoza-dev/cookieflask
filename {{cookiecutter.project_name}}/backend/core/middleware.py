@@ -4,7 +4,7 @@ from functools import wraps
 from typing import Optional, Tuple, Any, Callable
 
 from core.config import APP_CONFIG
-from logs import log_config
+from logs import logs_config
 
 
 BEARER_PREFIX = "Bearer "
@@ -73,7 +73,7 @@ def _log_auth_failure(reason: str, details: str = "") -> None:
     if details and not any(sensitive in details.lower() for sensitive in ['token', 'key', 'secret']):
         log_message += f" - {details}"
     
-    log_config.logger.warning(log_message)
+    logs_config.logger.warning(log_message)
 
 
 def token_required(func: Callable) -> Callable:
@@ -158,7 +158,7 @@ def token_required(func: Callable) -> Callable:
             
         except Exception as error:
             # Unexpected errors - log for debugging but don't expose details
-            log_config.logger.error(
+            logs_config.logger.error(
                 f"Unexpected authentication error: {type(error).__name__}: {str(error)}"
             )
             return jsonify({'msg': ERROR_MESSAGES['server_error']}), 500

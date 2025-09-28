@@ -1,8 +1,10 @@
 import os
 import sys
+import re
 from loguru import logger
 from datetime import date
 from dotenv import load_dotenv
+import logging
 
 load_dotenv()
 
@@ -14,7 +16,6 @@ app_log_path = os.path.join(log_dir, f"{date.today()}-{log_file}")
 
 logger.remove()
 
-# Configuration
 logger.add(
     app_log_path,
     level=os.getenv("LOG_LEVEL", "DEBUG"),
@@ -25,44 +26,58 @@ logger.add(
     compression="gz",
 )
 
-# Console
 logger.add(
     sys.stdout,
     level="INFO",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name} | {message}",
+    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {message}",
     colorize=False
 )
-
-logger.add(
-    sys.stderr,
-    level="ERROR",
-    format="{time:YYYY-MM-DD HH:mm:ss} | {level} | {name} | {message}",
-    colorize=False
-)
-
-# Configure standard logging to use loguru
-import logging
 
 class InterceptHandler(logging.Handler):
+    """
+    Handler que intercepta logs del sistema estándar de Python y los redirige a Loguru
+    """
+    ANSI_ESCAPE_PATTERN = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
+    
     def emit(self, record):
-        # Get corresponding Loguru level if it exists
         try:
             level = logger.level(record.levelname).name
         except ValueError:
             level = record.levelno
 
-        # Find caller from where originated the logged message
+        message = record.getMessage()
+        clean_message = self.ANSI_ESCAPE_PATTERN.sub('', message)
+
         frame, depth = logging.currentframe(), 2
         while frame.f_code.co_filename == logging.__file__:
             frame = frame.f_back
             depth += 1
 
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+        logger.opt(depth=depth, exception=record.exc_info).log(level, clean_message)
 
-# Interceptor logs of Flask/Werkzeug/Gunicorn
-logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+intercept_handler = InterceptHandler()
 
-# Gunicorn configuration
-for name in ["gunicorn", "gunicorn.access", "gunicorn.error", "werkzeug"]:
-    gunicorn_logger = logging.getLogger(name)
-    gunicorn_logger.handlers = [InterceptHandler()]
+root_logger = logging.getLogger()
+
+root_logger.handlers.clear()
+root_logger.addHandler(intercept_handler)
+root_logger.setLevel(logging.DEBUG)
+
+# Configurar loggers específicos y evitar propagación para prevenir duplicados
+loggers_to_configure = [
+    "gunicorn",
+    "gunicorn.access", 
+    "gunicorn.error",
+    "werkzeug",
+    "flask",
+    "flask.app"
+]
+
+for logger_name in loggers_to_configure:
+    specific_logger = logging.getLogger(logger_name)
+    specific_logger.handlers.clear()
+    specific_logger.addHandler(intercept_handler)
+    specific_logger.propagate = False
+    specific_logger.setLevel(logging.DEBUG)
+
+logging.getLogger().propagate = False
