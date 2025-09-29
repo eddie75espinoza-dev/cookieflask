@@ -9,12 +9,12 @@ services:
   backend:
     image: {{cookiecutter.docker_image_backend}}:${DOCKER_TAG:-latest}
     build: ./backend
-    container_name: {{cookiecutter.docker_image_backend}}-dev
+    container_name: {{cookiecutter.docker_image_backend}}
     restart: always
     ports:
       - "${PORT}:5000"
     env_file:
-      - .env.dev
+      - .env
     volumes:
       - ./backend:/backend
     {%- if cookiecutter.use_db == "yes" %}
@@ -24,7 +24,10 @@ services:
       - host.docker.internal:host-gateway
     {%- endif %}
     command: > 
-      bash -c "flask run --debug -p 5000 --host=${HOST};"
+      bash -c "gunicorn --timeout 120 --workers 4 --bind ${HOST}:5000
+      --access-logfile ./logs/gunicorn-access.log
+      --error-logfile ./logs/gunicorn-error.log
+      app:app"
     networks:
       - {{ cookiecutter.project_name }}_net
 
@@ -32,7 +35,7 @@ services:
 
   postgres:
     image: postgres:latest
-    container_name: {{cookiecutter.docker_image_backend}}-dev-postgres
+    container_name: postgres
     restart: always
     environment:
       POSTGRES_USER: ${DB_USER}

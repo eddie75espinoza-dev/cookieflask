@@ -8,8 +8,7 @@ def generate_secret_key():
     return secrets.token_urlsafe(32)
 
 use_db = "{{cookiecutter.use_db}}"
-env_dev_file = os.path.join(os.getcwd(), '.env.dev')
-env_prod_file = os.path.join(os.getcwd(), '.env.prod')
+env_file = os.path.join(os.getcwd(), '.env')
 
 
 if use_db == "no":
@@ -48,7 +47,6 @@ def write_secret_key(env_file):
             print(f"⚠️ File {env_file} not found.")
 
 
-write_secret_key(env_dev_file)
-write_secret_key(env_prod_file)
+write_secret_key(env_file)
 
 print(f"💻 All set! Let's start coding! 🔥")

@@ -40,18 +40,18 @@ Dada la separación de los ambientes de desarrollo y producción, ejecute los si
 
 #### Contenedor en ambiente de producción
 ```bash
-docker-compose -f docker-compose.prod.yml --env-file .env.prod up -d --build
+docker-compose -f docker-compose-prod.yml up -d --build
 ```
 
 #### Contenedor en ambiente de desarrollo
 ```bash
-docker-compose -f docker-compose.dev.yml --env-file .env.dev up -d --build
+docker-compose -f docker-compose-dev.yml up -d --build
 ```
 
 Para detener el servicio, ejecutar el siguiente comando en la terminal:
 
 ```bash
-docker-compose -f docker-compose.prod.yml --env-file .env.prod down -v
+docker-compose -f docker-compose-prod.yml down -v
 ```
 
 ## Descripción de Endpoints
