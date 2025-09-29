@@ -5,7 +5,7 @@ import datetime
 from flask import Flask
 
 
-from middleware.middleware import (
+from core.middleware import (
     _extract_token,
     _validate_token_as_api_key,
     _log_auth_failure,
@@ -106,28 +106,28 @@ class TestExtractToken:
 class TestValidateTokenAsApiKey:
     """Test _validate_token_as_api_key function."""
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_validate_correct_api_key(self, mock_config):
         """Test validation with correct API key."""
         mock_config.TOKEN_API_KEY = "test_api_key"
         result = _validate_token_as_api_key("test_api_key")
         assert result is True
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_validate_incorrect_api_key(self, mock_config):
         """Test validation with incorrect API key."""
         mock_config.TOKEN_API_KEY = "test_api_key"
         result = _validate_token_as_api_key("wrong_api_key")
         assert result is False
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_validate_empty_config_key(self, mock_config):
         """Test validation when config key is empty."""
         mock_config.TOKEN_API_KEY = ""
         result = _validate_token_as_api_key("some_token")
         assert result is False
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_validate_none_config_key(self, mock_config):
         """Test validation when config key is None."""
         mock_config.TOKEN_API_KEY = None
@@ -138,30 +138,30 @@ class TestValidateTokenAsApiKey:
 class TestLogAuthFailure:
     """Test _log_auth_failure function."""
 
-    @patch('middleware.middleware.log_config')
-    def test_log_simple_failure(self, mock_log_config):
+    @patch('core.middleware.logs_config')
+    def test_log_simple_failure(self, mock_logs_config):
         """Test logging simple authentication failure."""
         _log_auth_failure("Invalid token")
         
-        mock_log_config.logger.warning.assert_called_once_with(
+        mock_logs_config.logger.warning.assert_called_once_with(
             "Authentication failed: Invalid token"
         )
 
-    @patch('middleware.middleware.log_config')
-    def test_log_failure_with_safe_details(self, mock_log_config):
+    @patch('core.middleware.logs_config')
+    def test_log_failure_with_safe_details(self, mock_logs_config):
         """Test logging failure with safe details."""
         _log_auth_failure("Invalid format", "header malformed")
         
-        mock_log_config.logger.warning.assert_called_once_with(
+        mock_logs_config.logger.warning.assert_called_once_with(
             "Authentication failed: Invalid format - header malformed"
         )
 
-    @patch('middleware.middleware.log_config')
-    def test_log_failure_filters_sensitive_token(self, mock_log_config):
+    @patch('core.middleware.logs_config')
+    def test_log_failure_filters_sensitive_token(self, mock_logs_config):
         """Test that token details are filtered out."""
         _log_auth_failure("Invalid JWT", "token validation failed")
         
-        mock_log_config.logger.warning.assert_called_once_with(
+        mock_logs_config.logger.warning.assert_called_once_with(
             "Authentication failed: Invalid JWT"
         )
 
@@ -169,7 +169,7 @@ class TestLogAuthFailure:
 class TestTokenRequiredDecorator:
     """Test token_required decorator."""
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_successful_authentication(self, mock_config, request_context, 
                                      valid_jwt_token, test_function):
         """Test successful authentication flow."""
@@ -183,13 +183,13 @@ class TestTokenRequiredDecorator:
         mock_request.headers = Mock()
         mock_request.headers.get = Mock(return_value=f"Bearer {valid_jwt_token}")
         
-        with patch('middleware.middleware.request', mock_request):
+        with patch('core.middleware.request', mock_request):
             decorated_func = token_required(test_function)
             result = decorated_func()
             
             assert result == ({"message": "success"}, 200)
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_missing_authorization_header(self, mock_config, request_context, test_function):
         """Test missing Authorization header."""
         # Create proper mock objects
@@ -199,15 +199,15 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 401
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_invalid_header_format(self, mock_config, request_context, test_function):
         """Test invalid Authorization header format."""
         # Create proper mock objects
@@ -217,8 +217,8 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
 
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             mock_request.headers.get.return_value = "Basic invalid_format"
             mock_response.return_value = Mock()
@@ -228,7 +228,7 @@ class TestTokenRequiredDecorator:
             
             assert status_code == 401
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_bearer_without_token(self, mock_config, request_context, test_function):
         """Test Bearer without token."""
         # Create proper mock objects
@@ -238,8 +238,8 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
 
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             mock_request.headers.get.return_value = "Bearer"
             mock_response.return_value = Mock()
@@ -249,7 +249,7 @@ class TestTokenRequiredDecorator:
             
             assert status_code == 401
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_invalid_api_key(self, mock_config, request_context, test_function):
         """Test invalid API key."""
         mock_config.TOKEN_API_KEY = "expected_key"
@@ -261,15 +261,15 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 403
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_invalid_jwt_signature(self, mock_config, request_context, 
                                  invalid_signature_token, test_function):
         """Test invalid JWT signature."""
@@ -283,15 +283,15 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 403
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_malformed_jwt_token(self, mock_config, request_context, 
                                 malformed_jwt_token, test_function):
         """Test malformed JWT token."""
@@ -305,15 +305,15 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 403
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_jwt_decode_error(self, mock_config, request_context, test_function):
         """Test JWT DecodeError exception."""
         # Create a token that will cause DecodeError specifically
@@ -329,15 +329,15 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 403
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_jwt_invalid_token_error(self, mock_config, request_context, test_function):
         """Test JWT InvalidTokenError exception."""
         # Create a token that will cause InvalidTokenError (missing required claim)
@@ -358,15 +358,15 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 403
 
-    @patch('middleware.middleware.APP_CONFIG')
+    @patch('core.middleware.APP_CONFIG')
     def test_jwt_decode_error_direct(self, mock_config, request_context, test_function):
         """Test JWT DecodeError by mocking jwt.decode directly."""
         valid_token = "some_token_that_passes_api_key_validation"
@@ -381,8 +381,8 @@ class TestTokenRequiredDecorator:
         mock_response = Mock()
         
         # Mock jwt.decode to specifically raise DecodeError
-        with patch('middleware.middleware.request', mock_request), \
-            patch('middleware.middleware.jsonify', return_value=mock_response), \
+        with patch('core.middleware.request', mock_request), \
+            patch('core.middleware.jsonify', return_value=mock_response), \
             patch('jwt.decode', side_effect=jwt.DecodeError("Forced decode error")):
             
             decorated_func = token_required(test_function)
@@ -390,9 +390,9 @@ class TestTokenRequiredDecorator:
             
             assert status_code == 403
 
-    @patch('middleware.middleware.APP_CONFIG')
-    @patch('middleware.middleware.log_config')
-    def test_unexpected_exception(self, mock_log_config, mock_config, 
+    @patch('core.middleware.APP_CONFIG')
+    @patch('core.middleware.logs_config')
+    def test_unexpected_exception(self, mock_logs_config, mock_config, 
                                 request_context, test_function):
         """Test handling of unexpected exceptions."""
         # Create proper mock objects
@@ -402,14 +402,14 @@ class TestTokenRequiredDecorator:
         
         mock_response = Mock()
         
-        with patch('middleware.middleware.request', mock_request), \
-             patch('middleware.middleware.jsonify', return_value=mock_response):
+        with patch('core.middleware.request', mock_request), \
+             patch('core.middleware.jsonify', return_value=mock_response):
             
             decorated_func = token_required(test_function)
             result, status_code = decorated_func()
             
             assert status_code == 500
-            mock_log_config.logger.error.assert_called_once()
+            mock_logs_config.logger.error.assert_called_once()
 
     def test_preserves_function_metadata(self):
         """Test that decorator preserves original function metadata."""
