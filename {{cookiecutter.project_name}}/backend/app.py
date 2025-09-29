@@ -6,7 +6,7 @@ from flask_migrate import Migrate
 {%- endif %}
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
-from core.config import APP_CONFIG
+from core.config import APP_CONFIG, init_sentry
 from routers import routes
 {%- if cookiecutter.use_db == "yes" %}
 from db.database import db, test_connection
@@ -17,20 +17,36 @@ ma = Marshmallow()
 
 
 def create_app():
+     """
+    Create and configure Flask application instance.
+    
+    This factory function:
+    - Initializes Sentry (production only)
+    - Configures Flask app with environment settings
+    - Configures JWT authentication
+    - Registers health check endpoint
+    
+    Returns:
+        Configured Flask application instance.
+    """
+    # Initialize Sentry first (will only run in production)
+    init_sentry(APP_CONFIG)
+
     app = Flask(__name__)
     app.config.from_object(APP_CONFIG)
     app.json.sort_keys = False
     
+    # Initialize extensions
     {%- if cookiecutter.use_db == "yes" %}
     db.init_app(app)
     Migrate(app, db)
     {%- endif %}
-
-    ma.init_app(app)
     JWTManager(app)
+    ma.init_app(app)
 
     app.register_blueprint(routes.bp)
     
+    # Configure URL prefix for API
     script_name = APP_CONFIG.API_BASE_URL
     app.wsgi_app = DispatcherMiddleware(app.wsgi_app, {
         script_name: app
@@ -66,5 +82,6 @@ def create_app():
 
     return app
 
-    
+
+# Create application instance    
 app = create_app()
