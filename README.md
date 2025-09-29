@@ -89,5 +89,5 @@ Si deseas modificar el comportamiento de estos hooks, puedes editar directamente
 
 ### Notas finales
 
-Una vez concluida la descarga de la plantilla vaya al archivo `.gitignore` y descomente las lineas referentes a los archivos `_.env.dev_` y `_.env.prod_`, `_.env_`, `_.vscode_` esto evitará que sea incluyan en los 'commit' posteriores en su trabajo con el repositorio.
+Una vez concluida la descarga de la plantilla vaya al archivo `.gitignore` y descomente las lineas referentes a los archivos `_.env_` y `_.vscode_` esto evitará que sea incluyan en los 'commits' posteriores en su trabajo con el repositorio.
 Una vez generadas las API KEY elimine el archivo `_keygen.py_`.
