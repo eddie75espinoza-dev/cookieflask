@@ -17,7 +17,7 @@ ma = Marshmallow()
 
 
 def create_app():
-     """
+    """
     Create and configure Flask application instance.
     
     This factory function:
