@@ -3,6 +3,7 @@ from typing import Optional
 from dotenv import load_dotenv
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
+from urllib.parse import quote_plus
 
 from logs import logs_config
 
@@ -26,11 +27,11 @@ class BaseConfig:
     {%- if cookiecutter.use_db == "yes" %}
 
     # Database settings
-    SQLALCHEMY_DATABASE_URI = (
-        f'postgresql://{os.getenv("DB_USER")}:'
-        f'{os.getenv("DB_PASSWORD")}@'
-        f'{os.getenv("DB_HOST")}:{os.getenv("DB_PORT")}/'
-        f'{os.getenv("DB_NAME")}'
+    SQLALCHEMY_DATABASE_URI: str = (
+        f"postgresql://{quote_plus(os.getenv('DB_USER'))}:"
+        f"{quote_plus(os.getenv('DB_PASSWORD'))}@"
+        f"{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', '5432')}/"
+        f"{os.getenv('DB_NAME')}"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     
@@ -122,34 +123,11 @@ def init_sentry(config: BaseConfig) -> None:
                 FlaskIntegration(
                     transaction_style="url",
                 )
-            ],
-            # Additional production settings
-            before_send=_filter_sensitive_data,
+            ]
         )
     except Exception as exc:
         # Log error but don't crash the application
         logs_config.logger.warning(f"Failed to initialize Sentry: {exc}")
-
-
-def _filter_sensitive_data(event: dict, hint: dict) -> Optional[dict]:
-    """
-    Filter sensitive data from Sentry events before sending.
-    
-    Args:
-        event: Sentry event dictionary.
-        hint: Additional context about the event.
-    
-    Returns:
-        Modified event or None to drop the event.
-    """
-    # Filter out sensitive headers
-    if 'request' in event and 'headers' in event['request']:
-        sensitive_headers = ['Authorization', 'X-Api-Key', 'Cookie']
-        for header in sensitive_headers:
-            if header in event['request']['headers']:
-                event['request']['headers'][header] = '[Filtered]'
-    
-    return event
 
 
 # Export the active configuration
