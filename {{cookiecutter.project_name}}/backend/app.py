@@ -9,7 +9,7 @@ from flask_migrate import Migrate
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
 
 from core.config import APP_CONFIG, init_sentry
-from logs import logs_config, logs_sanitizer
+from logs import logs_config
 from routers import routes
 {%- if cookiecutter.use_db == "yes" %}
 from db.database import db, test_connection
@@ -80,10 +80,7 @@ def create_app():
             "json_data": request.get_json(silent=True)
         }
         
-        # Sanitize sensitive data before logging
-        sanitized_data = logs_sanitizer.sanitize_log_data(log_data)
-        
-        logs_config.logger.info(f"Request: {json.dumps(sanitized_data)}")
+        logs_config.logger.info(f"Request: {json.dumps(log_data)}")
 
     @app.after_request
     def log_response_info(response):
@@ -109,10 +106,7 @@ def create_app():
             "response_data": response.get_data(as_text=True)
         }
         
-        # Sanitize sensitive data before logging
-        sanitized_data = logs_sanitizer.sanitize_log_data(log_data)
-        
-        logs_config.logger.info(f"Response: {json.dumps(sanitized_data)}")
+        logs_config.logger.info(f"Response: {json.dumps(log_data)}")
         
         return response
     
