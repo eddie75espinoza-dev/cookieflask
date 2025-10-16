@@ -1,5 +1,5 @@
 import os
-from typing import Optional
+from typing import Optional, Type, Union
 from dotenv import load_dotenv
 import sentry_sdk
 from sentry_sdk.integrations.flask import FlaskIntegration
@@ -15,14 +15,14 @@ class BaseConfig:
     """Base configuration with common settings across all environments."""
     
     # Flask core settings
-    HOST: str = os.getenv('HOST', '0.0.0.0')
-    PORT: int = int(os.getenv('PORT', 5000))
-    SECRET_KEY: str = os.getenv('SECRET_KEY', 'dev-secret-key')
-    API_BASE_URL: str = os.getenv('API_BASE_URL', '')
+    HOST: str = os.getenv('HOST')
+    PORT: int = int(os.getenv('PORT'))
+    SECRET_KEY: str = os.getenv('SECRET_KEY')
+    API_BASE_URL: str = os.getenv('API_BASE_URL')
     
     # JWT settings
-    JWT_SECRET_KEY: str = os.getenv('JWT_SECRET_KEY', 'jwt-secret-key')
-    TOKEN_API_KEY: str = os.getenv('TOKEN_API_KEY', '')
+    JWT_SECRET_KEY: str = os.getenv('JWT_SECRET_KEY')
+    TOKEN_API_KEY: str = os.getenv('TOKEN_API_KEY')
     
     {%- if cookiecutter.use_db == "yes" %}
 
@@ -75,7 +75,7 @@ _CONFIG_MAP = {
 }
 
 
-def get_config() -> BaseConfig:
+def get_config() -> Union[DevelopmentConfig, StagingConfig, ProductionConfig]:
     """
     Get configuration instance based on ENVIRONMENT variable.
     
@@ -84,7 +84,7 @@ def get_config() -> BaseConfig:
         Defaults to DevelopmentConfig if ENVIRONMENT is not set or invalid.
     """
     environment = os.getenv('ENVIRONMENT', 'development').lower()
-    config_class = _CONFIG_MAP.get(environment, DevelopmentConfig)
+    config_class: Type[BaseConfig] = _CONFIG_MAP.get(environment, DevelopmentConfig)
     return config_class()
 
 
@@ -119,6 +119,7 @@ def init_sentry(config: BaseConfig) -> None:
             profiles_sample_rate=config.SENTRY_TRACES_SAMPLE_RATE,  # Match traces rate
             send_default_pii=False,  # Don't send personally identifiable information by default
             attach_stacktrace=True,
+            enable_logs=True,
             integrations=[
                 FlaskIntegration(
                     transaction_style="url",
