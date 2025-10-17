@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import secrets
 import shutil
@@ -37,27 +38,22 @@ def write_secret_key(env_file):
     secret_key = generate_secret_key()
     
     if os.path.exists(env_file):
-        # El archivo existe, intentar reemplazar
         with open(env_file, 'r') as file:
             content = file.read()
         
-        new_content = content.replace("It will be changed", secret_key)
+        secret_key_pattern = r'^SECRET_KEY=.*$'
         
-        if new_content != content:
-            # Se encontró y reemplazó el placeholder
+        if re.search(secret_key_pattern, content, re.MULTILINE):
+            # Reemplazar la línea existente
+            new_content = re.sub(secret_key_pattern, f'SECRET_KEY={secret_key}', content, flags=re.MULTILINE)
             with open(env_file, 'w') as file:
                 file.write(new_content)
             print(f"✅ Secret key updated in {env_file}")
         else:
-            # No se encontró el placeholder, agregar la clave al final
+            # No existe, agregar al final
             with open(env_file, 'a') as file:
                 file.write(f"\nSECRET_KEY={secret_key}\n")
             print(f"✅ Secret key added to {env_file}")
-    else:
-        # El archivo no existe, crearlo
-        with open(env_file, 'w') as file:
-            file.write(f"SECRET_KEY={secret_key}\n")
-        print(f"✅ Created {env_file} with secret key")
 
 
 write_secret_key(env_file)
