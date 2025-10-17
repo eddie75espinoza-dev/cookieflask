@@ -34,19 +34,31 @@ if use_db == "no":
 
 
 def write_secret_key(env_file):
+    secret_key = generate_secret_key()
+    
     if os.path.exists(env_file):
+        # El archivo existe, intentar reemplazar
         with open(env_file, 'r') as file:
             content = file.read()
-        new_content = content.replace("It will be changed", generate_secret_key())
+        
+        new_content = content.replace("It will be changed", secret_key)
         
         if new_content != content:
+            # Se encontró y reemplazó el placeholder
             with open(env_file, 'w') as file:
                 file.write(new_content)
-            print(f"✅ Secret keys updated in {env_file}")
+            print(f"✅ Secret key updated in {env_file}")
         else:
-            print(f"⚠️ File {env_file} not found.")
+            # No se encontró el placeholder, agregar la clave al final
+            with open(env_file, 'a') as file:
+                file.write(f"\nSECRET_KEY={secret_key}\n")
+            print(f"✅ Secret key added to {env_file}")
+    else:
+        # El archivo no existe, crearlo
+        with open(env_file, 'w') as file:
+            file.write(f"SECRET_KEY={secret_key}\n")
+        print(f"✅ Created {env_file} with secret key")
 
 
 write_secret_key(env_file)
-
 print(f"💻 All set! Let's start coding! 🔥")
